@@ -7,6 +7,7 @@ use nih_plug::prelude::{Editor, GuiContext, ParamSetter};
 use once_cell::unsync::OnceCell;
 use slint::platform::femtovg_renderer::FemtoVGRenderer;
 use slint::platform::WindowAdapter;
+use slint::platform::WindowEvent;
 use slint::{LogicalPosition, PhysicalSize, SharedString};
 use std::{
     cell::RefCell,
@@ -320,6 +321,7 @@ pub struct WindowHandler<T: slint::ComponentHandle> {
     window_shown: RefCell<bool>,
     component: T,
     adapter: Rc<BaseviewSlintAdapter>,
+    keyboard_input_is_enabled: RefCell<bool>,
 }
 
 impl<T: slint::ComponentHandle> WindowHandler<T> {
@@ -458,6 +460,10 @@ impl<T: slint::ComponentHandle> WindowHandler<T> {
         let setter = ParamSetter::new(&*self.context);
         setter.end_set_parameter(param);
     }
+
+    pub fn set_keyboard_input_is_enabled(&self, is_enabled: bool) {
+        *self.keyboard_input_is_enabled.borrow_mut() = is_enabled;
+    }
 }
 
 impl<T: slint::ComponentHandle> baseview::WindowHandler for WindowHandler<T> {
@@ -516,8 +522,6 @@ impl<T: slint::ComponentHandle> baseview::WindowHandler for WindowHandler<T> {
     }
 
     fn on_event(&mut self, _window: &mut baseview::Window, event: Event) -> EventStatus {
-        use slint::platform::WindowEvent;
-
         match event {
             Event::Mouse(mouse_event) => {
                 // Convert baseview mouse event to Slint event
@@ -581,6 +585,10 @@ impl<T: slint::ComponentHandle> baseview::WindowHandler for WindowHandler<T> {
                 EventStatus::Captured
             }
             Event::Keyboard(key_event) => {
+                if !*self.keyboard_input_is_enabled.borrow() {
+                    return EventStatus::Ignored;
+                }
+
                 let text: SharedString = if let keyboard_types::Key::Character(char) = key_event.key
                 {
                     char.into()
@@ -606,6 +614,10 @@ impl<T: slint::ComponentHandle> baseview::WindowHandler for WindowHandler<T> {
                         _ => "".into(),
                     }
                 };
+
+                if text.is_empty() {
+                    return EventStatus::Ignored;
+                }
 
                 match key_event.state {
                     keyboard_types::KeyState::Down => {
@@ -743,6 +755,7 @@ impl<T: slint::ComponentHandle + 'static> Editor for SlintEditor<T> {
                     window_shown: RefCell::new(false),
                     component,
                     adapter,
+                    keyboard_input_is_enabled: RefCell::new(false),
                 }
             });
 
