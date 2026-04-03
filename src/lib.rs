@@ -514,6 +514,9 @@ impl<T: slint::ComponentHandle> baseview::WindowHandler for WindowHandler<T> {
         // Update Slint timers and animations
         slint::platform::update_timers_and_animations();
 
+        // Process pending resizes
+        self.process_pending_resizes(window);
+
         // Render the component - Slint handles the rendering internally
         // It will call our WindowAdapter's renderer() method when needed
         self.component.window().request_redraw();
@@ -527,9 +530,6 @@ impl<T: slint::ComponentHandle> baseview::WindowHandler for WindowHandler<T> {
         if let Some(renderer) = self.adapter.renderer.get() {
             let _ = renderer.render();
         }
-
-        // Process pending resizes
-        self.process_pending_resizes(window);
 
         // Swap buffers after rendering
         window.gl_context().unwrap().swap_buffers();
