@@ -82,13 +82,6 @@ impl SlintEditorState {
         }
     }
 
-    pub fn with_scale(width: u32, height: u32, scale_factor: f32) -> Self {
-        Self {
-            size: AtomicCell::new((width, height)),
-            scale_factor: AtomicCell::new(scale_factor),
-        }
-    }
-
     /// Returns a `(width, height)` pair for the current size of the GUI in logical pixels.
     pub fn size(&self) -> (u32, u32) {
         self.size.load()

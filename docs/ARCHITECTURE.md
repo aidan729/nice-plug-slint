@@ -60,12 +60,14 @@ We also explicitly re-initialize the renderer at the start of the first `on_fram
 
 ## Resize handling
 
-There are two resize paths:
+Plugin windows don't get OS-level resize handles - the host controls the window frame. All resizing is programmatic, typically triggered by a drag handle drawn inside the Slint UI itself.
 
-- **Programmatic** (from Slint callbacks): Use `handler.pending_resizes()` to push to a queue, which gets processed in `on_frame()`. You can't call `resize()` directly from a Slint callback because you don't have access to `&mut Window`.
-- **User-dragged**: baseview sends a `WindowEvent::Resized` which we handle in `on_event()`, also going through the resize queue.
+There are two ways to trigger a resize depending on where the call originates:
 
-`resize()` updates the internal size, notifies Slint, tells the host via `context.request_resize()`, and then actually resizes the baseview window.
+- **From a Slint callback**: Use `handler.pending_resizes()` to push to a queue, which gets processed in `on_frame()`. You can't call `resize()` directly from a Slint callback because you don't have access to `&mut Window`.
+- **From `on_frame` or `with_event_loop`**: Call `handler.resize(window, width, height)` directly.
+
+`resize()` updates the internal size, notifies Slint, tells the host via `context.request_resize()`, and then actually resizes the baseview window. Baseview may send a `WindowEvent::Resized` back afterwards - `handle_window_info()` handles that to sync the confirmed physical size and scale factor.
 
 ## Keyboard events
 
