@@ -71,8 +71,9 @@ There are two ways to trigger a resize depending on where the call originates:
 
 ## Keyboard events
 
-All keyboard events are passed to the plugin host and the Slint application by default. You can prevent the keyboard events from being propagated to the plugin host. This is what you would want for text input components for example.
-To prevent propagation you need to add a property to the Slint application first. Set this property to true from within the Slint application whenever you want to prevent keyboard event propagation.
+All keyboard events are dispatched to the Slint application and passed to the plugin host by default. You can block propagation to the host when needed - for example, text input components need to capture key events so the host's keyboard shortcuts don't fire while the user is typing.
+
+To control propagation, add a property to your Slint component and toggle it when you need exclusive key input:
 
 ```slint
 export component AppWindow inherits Window {
@@ -80,18 +81,16 @@ export component AppWindow inherits Window {
 }
 ```
 
-In the `.with_event_loop` handler you can then read this property and set the `keyboard_input_is_enabled` state on the window_handler. The window_handler takes care of keyboard event propagation.
+In the `.with_event_loop` handler, sync this property to `set_keyboard_input_is_enabled` on the handler. When `true`, key events are returned as `Captured` (host doesn't see them); when `false`, they're returned as `Ignored` (host sees them too).
 
 ```rust
 fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Editor>> {
     Some(Box::new(
-        SlintEditor::new(params.editor_state.clone(), || gui::AppWindow::new())
+        SlintEditor::new(self.params.editor_state.clone(), || gui::AppWindow::new())
             .with_event_loop({
-                let params = self.params.clone();
                 move |handler, _setter, _window| {
-                    // Pass the keyboard_input_is_enabled state to the window handler
-                    window_handler.set_keyboard_input_is_enabled(
-                        component.get_keyboard_input_is_enabled(),
+                    handler.set_keyboard_input_is_enabled(
+                        handler.component().get_keyboard_input_is_enabled(),
                     );
                 }
             }),
@@ -99,7 +98,7 @@ fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Edi
 }
 ```
 
-Don't forget to set the `keyboard_input_is_enabled` state back to false from the Slint application when you want all keyboard events to be passed to the plugin host again.
+Set `keyboard_input_is_enabled` back to false once the component no longer needs exclusive key input.
 
 ## Data flow
 

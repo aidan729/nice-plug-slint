@@ -88,7 +88,7 @@ impl SlintEditorState {
 /// ```rust,ignore
 /// fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Editor>> {
 ///     Some(Box::new(
-///         SlintEditor::new(self.params.editor_state.clone(), || gui::AppWindow::new(), (400, 300))
+///         SlintEditor::new(self.params.editor_state.clone(), || gui::AppWindow::new())
 ///             .with_event_loop({
 ///                 let params = self.params.clone();
 ///                 move |handler, _setter, _window| {
@@ -106,7 +106,7 @@ pub struct SlintEditor<T: slint::ComponentHandle> {
 }
 
 impl<T: slint::ComponentHandle + 'static> SlintEditor<T> {
-    /// Create an editor from state containing the window size and scale factor and a factory closure.
+    /// Create an editor from persisted state and a component factory closure.
     pub fn new<F>(state: Arc<SlintEditorState>, factory: F) -> Self
     where
         F: Fn() -> Result<T, slint::PlatformError> + 'static + Send + Sync,
@@ -296,7 +296,7 @@ pub struct WindowHandler<T: slint::ComponentHandle> {
     window_shown: RefCell<bool>,
     component: T,
     adapter: Rc<BaseviewSlintAdapter>,
-    keyboard_input_is_enabled: RefCell<bool>,
+    prevent_key_event_propagation: RefCell<bool>,
 }
 
 impl<T: slint::ComponentHandle> WindowHandler<T> {
@@ -419,8 +419,8 @@ impl<T: slint::ComponentHandle> WindowHandler<T> {
         setter.end_set_parameter(param);
     }
 
-    pub fn set_keyboard_input_is_enabled(&self, is_enabled: bool) {
-        *self.keyboard_input_is_enabled.borrow_mut() = is_enabled;
+    pub fn set_prevent_key_event_propagation(&self, is_enabled: bool) {
+        *self.prevent_key_event_propagation.borrow_mut() = is_enabled;
     }
 }
 
@@ -592,7 +592,7 @@ impl<T: slint::ComponentHandle> baseview::WindowHandler for WindowHandler<T> {
                     }
                 }
 
-                if *self.keyboard_input_is_enabled.borrow() {
+                if *self.prevent_key_event_propagation.borrow() {
                     EventStatus::Captured
                 } else {
                     EventStatus::Ignored
@@ -707,7 +707,7 @@ impl<T: slint::ComponentHandle + 'static> Editor for SlintEditor<T> {
                     window_shown: RefCell::new(false),
                     component,
                     adapter,
-                    keyboard_input_is_enabled: RefCell::new(false),
+                    prevent_key_event_propagation: RefCell::new(false),
                 }
             });
 
