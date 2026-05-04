@@ -71,9 +71,8 @@ There are two ways to trigger a resize depending on where the call originates:
 
 ## Keyboard events
 
-All keyboard events are consumed by the plugin host application by default. You can let your plugin consume keyboard events instead when needed. This is what you would want for text input components for example. The events won't get propagated to the plugin host when the plugin consumes the keyboard events.
-
-To enable keyboard events you need to add a property to the Slint application first. Set this property to true from within the Slint application whenever you need to process keyboard events.
+All keyboard events are passed to the plugin host and the Slint application by default. You can prevent the keyboard events from being propagated to the plugin host. This is what you would want for text input components for example.
+To prevent propagation you need to add a property to the Slint application first. Set this property to true from within the Slint application whenever you want to prevent keyboard event propagation.
 
 ```slint
 export component AppWindow inherits Window {
@@ -81,7 +80,7 @@ export component AppWindow inherits Window {
 }
 ```
 
-In the `.with_event_loop` handler you can then read this property and set the `keyboard_input_is_enabled` state on the window_handler. The window_handler takes care of processing the keyboard events.
+In the `.with_event_loop` handler you can then read this property and set the `keyboard_input_is_enabled` state on the window_handler. The window_handler takes care of keyboard event propagation.
 
 ```rust
 fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Editor>> {
@@ -100,7 +99,7 @@ fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Edi
 }
 ```
 
-Don't forget to set the `keyboard_input_is_enabled` state back to false from your Slint application when your plugin no longer needs keyboard input.
+Don't forget to set the `keyboard_input_is_enabled` state back to false from the Slint application when you want all keyboard events to be passed to the plugin host again.
 
 ## Data flow
 

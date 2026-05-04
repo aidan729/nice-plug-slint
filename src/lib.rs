@@ -543,10 +543,6 @@ impl<T: slint::ComponentHandle> baseview::WindowHandler for WindowHandler<T> {
                 EventStatus::Captured
             }
             Event::Keyboard(key_event) => {
-                if !*self.keyboard_input_is_enabled.borrow() {
-                    return EventStatus::Ignored;
-                }
-
                 let text: SharedString = if let keyboard_types::Key::Character(char) = key_event.key
                 {
                     char.into()
@@ -596,7 +592,11 @@ impl<T: slint::ComponentHandle> baseview::WindowHandler for WindowHandler<T> {
                     }
                 }
 
-                EventStatus::Captured
+                if *self.keyboard_input_is_enabled.borrow() {
+                    EventStatus::Captured
+                } else {
+                    EventStatus::Ignored
+                }
             }
             Event::Window(window_event) => {
                 match window_event {
