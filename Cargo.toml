@@ -10,13 +10,13 @@ categories = ["multimedia::audio"]
 [dependencies]
 nice-plug-core = { git = "https://codeberg.org/RustAudio/nice-plug" }
 baseview = { version = "0.1.1", features = ["opengl"] }
-slint = { version = "=1.15.1", default-features = false, features = ["std", "renderer-femtovg", "raw-window-handle-06", "compat-1-2"] }
-i-slint-renderer-femtovg = { version = "=1.15.1", features = ["opengl"] }
+slint = { version = "=1.16.1", default-features = false, features = ["std", "renderer-femtovg", "raw-window-handle-06", "compat-1-2"] }
+i-slint-renderer-femtovg = { version = "=1.16.1", features = ["opengl"] }
 raw-window-handle = "0.6"
 crossbeam = "0.8"
-once_cell = "1.19"
+once_cell = "1.21.4"
 serde = { version = "1.0", features = ["derive"] }
-keyboard-types = { version = "0.6.2", default-features = false }
+keyboard-types = { version = "0.8.3", default-features = false }
 
 [features]
 default = []
