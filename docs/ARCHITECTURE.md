@@ -4,7 +4,7 @@ This document explains how the Slint/baseview bridge works. Most users won't nee
 
 ## Overview
 
-NIH-plug's `Editor` trait requires implementing `spawn()`, which is called by the host to open the plugin window. We use baseview for the actual OS window, and Slint's FemtoVG renderer (OpenGL) for drawing the UI.
+nice-plug's `Editor` trait requires implementing `spawn()`, which is called by the host to open the plugin window. We use baseview for the actual OS window, and Slint's FemtoVG renderer (OpenGL) for drawing the UI.
 
 The tricky parts are:
 
@@ -56,7 +56,7 @@ We also explicitly re-initialize the renderer at the start of the first `on_fram
 
 ## State persistence
 
-`SlintEditorState` is stored in the plugin's params struct under `#[persist]`, which means NIH-plug/the host handles serialization. We update the `width` and `height` fields directly through the `Arc` when the window is resized.
+`SlintEditorState` is stored in the plugin's params struct under `#[persist]`, which means nice-plug/the host handles serialization. We update the `width` and `height` fields directly through the `Arc` when the window is resized.
 
 ## Resize handling
 

@@ -1,10 +1,10 @@
 # nih-plug-slint
 
-An adapter for using [Slint](https://slint.dev/) GUIs with [NIH-plug](https://github.com/robbert-vdh/nih-plug) audio plugins. It uses baseview for windowing and FemtoVG (OpenGL) for rendering
+An adapter for using [Slint](https://slint.dev/) GUIs with [nice-plug](https://codeberg.org/RustAudio/nice-plug) audio plugins. It uses baseview for windowing and FemtoVG (OpenGL) for rendering.
 
 ## Example
 
-I took the liberty of creating a simple gain knob VST example project using NIH-Plug and NIH-Plug-Slint.
+I took the liberty of creating a simple gain knob VST example project using nice-plug and NIH-Plug-Slint.
 
 please see that here: [Gain Knob](https://github.com/aidan729/Gain-Knob)
 
@@ -89,7 +89,7 @@ Passed to the event loop handler. Gives you access to:
 
 - `.component()` - the Slint component
 - `.window()` - the Slint window
-- `.context()` - NIH-plug's `GuiContext` for parameter operations
+- `.context()` - nice-plug's `GuiContext` for parameter operations
 - `.resize(window, width, height)` - resize the window programmatically
 - `.queue_resize(width, height)` - use this from inside Slint callbacks instead of calling `resize` directly, since you won't have the `&mut Window` handy
 
@@ -111,6 +111,6 @@ ISC
 
 ## Credits
 
-- [NIH-plug](https://github.com/robbert-vdh/nih-plug) by Robbert van der Helm
+- [nice-plug](https://codeberg.org/RustAudio/nice-plug)
 - [Slint](https://slint.dev/) UI toolkit
 - [baseview](https://github.com/RustAudio/baseview) for windowing

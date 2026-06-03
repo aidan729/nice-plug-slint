@@ -3,8 +3,10 @@ use baseview::{
     WindowInfo, WindowOpenOptions, WindowScalePolicy,
 };
 use crossbeam::atomic::AtomicCell;
-use nih_plug::params::persist::PersistentField;
-use nih_plug::prelude::{Editor, GuiContext, ParamSetter};
+use nice_plug_core::context::gui::GuiContext;
+use nice_plug_core::context::gui::ParamSetter;
+use nice_plug_core::editor::Editor;
+use nice_plug_core::params::persist::PersistentField;
 use once_cell::unsync::OnceCell;
 use slint::platform::femtovg_renderer::FemtoVGRenderer;
 use slint::platform::WindowAdapter;
@@ -22,7 +24,7 @@ use serde::{Deserialize, Serialize};
 type EventLoopHandler<T> = dyn Fn(&WindowHandler<T>, ParamSetter, &mut Window) + Send + Sync;
 type SetupHandler<T> = dyn Fn(&WindowHandler<T>, &mut Window) + Send + Sync;
 
-/// Window size/state that gets persisted via NIH-plug's `#[persist]` mechanism.
+/// Window size/state that gets persisted via nice-plug's `#[persist]` mechanism.
 ///
 /// Put this in your params struct so the host can save and restore the window size:
 ///
@@ -35,7 +37,7 @@ type SetupHandler<T> = dyn Fn(&WindowHandler<T>, &mut Window) + Send + Sync;
 /// ```
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SlintEditorState {
-    #[serde(with = "nih_plug::params::persist::serialize_atomic_cell")]
+    #[serde(with = "nice_plug_core::params::persist::serialize_atomic_cell")]
     pub size: AtomicCell<(u32, u32)>,
 }
 
@@ -80,7 +82,7 @@ impl SlintEditorState {
     }
 }
 
-/// The NIH-plug [`Editor`] implementation for Slint UIs.
+/// The nice-plug [`Editor`] implementation for Slint UIs.
 ///
 /// Build one with [`SlintEditor::new`], optionally chaining
 /// [`with_event_loop`][Self::with_event_loop] to sync parameters each frame.
@@ -404,17 +406,21 @@ impl<T: slint::ComponentHandle> WindowHandler<T> {
         &self.context
     }
 
-    pub fn set_parameter_normalized(&self, param: &impl nih_plug::prelude::Param, normalized: f32) {
+    pub fn set_parameter_normalized(
+        &self,
+        param: &impl nice_plug_core::params::Param,
+        normalized: f32,
+    ) {
         let setter = ParamSetter::new(&*self.context);
         setter.set_parameter_normalized(param, normalized);
     }
 
-    pub fn begin_set_parameter(&self, param: &impl nih_plug::prelude::Param) {
+    pub fn begin_set_parameter(&self, param: &impl nice_plug_core::params::Param) {
         let setter = ParamSetter::new(&*self.context);
         setter.begin_set_parameter(param);
     }
 
-    pub fn end_set_parameter(&self, param: &impl nih_plug::prelude::Param) {
+    pub fn end_set_parameter(&self, param: &impl nice_plug_core::params::Param) {
         let setter = ParamSetter::new(&*self.context);
         setter.end_set_parameter(param);
     }
@@ -633,7 +639,7 @@ unsafe impl Send for Instance {}
 impl<T: slint::ComponentHandle + 'static> Editor for SlintEditor<T> {
     fn spawn(
         &self,
-        parent: nih_plug::prelude::ParentWindowHandle,
+        parent: nice_plug_core::editor::ParentWindowHandle,
         context: Arc<dyn GuiContext>,
     ) -> Box<dyn std::any::Any + Send> {
         let (width, height) = self.state.size();
