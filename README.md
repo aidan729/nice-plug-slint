@@ -14,13 +14,13 @@ Add the dependency:
 
 ```toml
 [dependencies]
-nih_plug_slint = { git = "https://github.com/aidan729/nih-plug-slint" }
+nice_plug_slint = { git = "https://github.com/aidan729/nice-plug-slint" }
 ```
 
 In your plugin:
 
 ```rust
-use nih_plug_slint::{SlintEditor, SlintEditorState};
+use nice_plug_slint::{SlintEditor, SlintEditorState};
 use std::sync::Arc;
 
 #[derive(Params)]

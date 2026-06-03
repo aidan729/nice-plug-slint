@@ -1,4 +1,4 @@
-# nih-plug-slint Architecture
+# nice-plug-slint Architecture
 
 This document explains how the Slint/baseview bridge works. Most users won't need to read this, but it's useful if you're debugging something weird or want to contribute.
 
