@@ -1,4 +1,4 @@
-# nih-plug-slint
+# nice-plug-slint
 
 An adapter for using [Slint](https://slint.dev/) GUIs with [nice-plug](https://codeberg.org/RustAudio/nice-plug) audio plugins. It uses baseview for windowing and FemtoVG (OpenGL) for rendering.
 
