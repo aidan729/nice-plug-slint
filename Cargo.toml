@@ -3,7 +3,7 @@ name = "nih_plug_slint"
 version = "0.1.1"
 edition = "2021"
 license = "ISC"
-description = "An adapter to use Slint GUIs with NIH-plug"
+description = "An adapter to use Slint GUIs with nice-plug"
 keywords = ["audio", "plugin", "vst3", "clap", "slint"]
 categories = ["multimedia::audio"]
 

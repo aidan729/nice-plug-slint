@@ -24,7 +24,7 @@ use serde::{Deserialize, Serialize};
 type EventLoopHandler<T> = dyn Fn(&WindowHandler<T>, ParamSetter, &mut Window) + Send + Sync;
 type SetupHandler<T> = dyn Fn(&WindowHandler<T>, &mut Window) + Send + Sync;
 
-/// Window size/state that gets persisted via NIH-plug's `#[persist]` mechanism.
+/// Window size/state that gets persisted via nice-plug's `#[persist]` mechanism.
 ///
 /// Put this in your params struct so the host can save and restore the window size:
 ///
@@ -82,7 +82,7 @@ impl SlintEditorState {
     }
 }
 
-/// The NIH-plug [`Editor`] implementation for Slint UIs.
+/// The nice-plug [`Editor`] implementation for Slint UIs.
 ///
 /// Build one with [`SlintEditor::new`], optionally chaining
 /// [`with_event_loop`][Self::with_event_loop] to sync parameters each frame.
