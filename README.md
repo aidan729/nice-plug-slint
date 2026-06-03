@@ -4,7 +4,7 @@ An adapter for using [Slint](https://slint.dev/) GUIs with [nice-plug](https://c
 
 ## Example
 
-I took the liberty of creating a simple gain knob VST example project using nice-plug and NIH-Plug-Slint.
+I took the liberty of creating a simple gain knob VST example project using nice-plug and Nice-Plug-Slint.
 
 please see that here: [Gain Knob](https://github.com/aidan729/Gain-Knob)
 
